@@ -1,0 +1,30 @@
+{
+  "coverage-validator": {
+    "PostToolUse": [
+      {
+        "matcher": "write_file",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [ -f coverage-ledger.json ]; then node scripts/validate-coverage-ledger.cjs coverage-ledger.json; fi",
+            "timeout": 15
+          }
+        ]
+      }
+    ]
+  },
+  "findings-validator": {
+    "PostToolUse": [
+      {
+        "matcher": "write_file",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [ -f findings.json ]; then node scripts/validate-findings.cjs findings.json; fi",
+            "timeout": 15
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,14 @@
+# Node & dependency caches
+node_modules/
+npm-debug.log*
+
+# Audit run scratch & output directories
+scratch/
+runs/
+~/security-audit-skill/
+
+# OS / Temporary files
+.DS_Store
+Thumbs.db
+*.tmp
+*.swp
