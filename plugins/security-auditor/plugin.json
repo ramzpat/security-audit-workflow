@@ -1,16 +1,10 @@
 {
   "name": "security-auditor",
-  "version": "1.0.0",
-  "description": "AGY Security Auditor Plugin integrating Cloudflare Security Audit Skill under the Harness² 8-component specification.",
-  "author": "AGY Security Engineering Team",
+  "author": {
+    "name": "AGY Security Engineering Team"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/cloudflare/security-audit-skill"
-  },
-  "skills": [
-    "skills/security-audit"
-  ],
-  "rules": [
-    "rules/security-auditor.md"
-  ]
+  }
 }

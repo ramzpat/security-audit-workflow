@@ -2,10 +2,22 @@
 node_modules/
 npm-debug.log*
 
+# Python caches
+__pycache__/
+*.py[cod]
+*$py.class
+
 # Audit run scratch & output directories
 scratch/
 runs/
+audit-runs/
+audit-memory/
 ~/security-audit-skill/
+
+# Environment secrets
+.env
+.env.local
+*.secret
 
 # OS / Temporary files
 .DS_Store

@@ -1,0 +1,43 @@
+# AGY Security Auditor — Portable Server Audit Configuration
+# Copy to config/server-audit.yaml and pair with a per-server .env file.
+
+harness:
+  manifest: "plugin/security-auditor.ts"
+  memory_dir: "${AUDIT_MEMORY_DIR:-./audit-memory}"
+
+server:
+  id: "${SERVER_ID:-prod-app-eu-01}"
+  repo_name: "${SERVER_REPO_NAME:-server-services}"
+  target_root: "${AUDIT_TARGET_ROOT:-.}"
+  profile: "${AUDIT_PROFILE:-standard}"
+  budget: 20
+  scope_paths: []
+  companions:
+    - "CLOUD-AND-DEPLOYMENT.md"
+    - "WEB-PROTOCOL-AND-AUTH.md"
+    - "PROTOCOLS-RPC-AND-MESSAGING.md"
+    - "DATA-ISOLATION-AND-LIFECYCLE.md"
+    - "SUPPLY-CHAIN-AND-RELEASE.md"
+
+llm:
+  provider: "${LLM_PROVIDER:-gemini}"
+  api_key_env: "AUDIT_LLM_API_KEY"
+  base_url: "${LLM_BASE_URL:-}"
+  models:
+    orchestrator: "${MODEL_ORCHESTRATOR:-pro}"
+    reconnaissance: "${MODEL_RECON:-flash}"
+    hunter: "${MODEL_HUNTER:-pro}"
+    critic: "${MODEL_CRITIC:-flash}"
+    verifier_phase3: "${MODEL_VERIFIER:-pro}"
+    verifier_phase5: "${MODEL_RECORD_VERIFIER:-flash}"
+    reporter: "${MODEL_REPORTER:-flash}"
+
+reporting:
+  discord:
+    enabled: true
+    webhook_url_env: "DISCORD_WEBHOOK_URL"
+    mention_role_id: "${DISCORD_MENTION_ROLE:-}"
+    attach_files:
+      - "REPORT.md"
+      - "FINDINGS-DETAIL.md"
+      - "NEEDS-VALIDATION.md"

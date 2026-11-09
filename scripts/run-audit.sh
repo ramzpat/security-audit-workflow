@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Security Auditor Harness Runner Script
-# Supports validation of audit artifacts (findings.json, coverage-ledger.json)
-# and running test suites.
+# Security Auditor Harness² Runner Script
+# Supports validation of audit artifacts (findings.json, coverage-ledger.json),
+# Discord webhook report dispatching, portable server audit runs, and test suites.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
@@ -13,10 +13,12 @@ usage() {
 Usage: $(basename "$0") <command> [args...]
 
 Commands:
-  test                      Run unit tests for findings and coverage validators
-  validate-findings <path>  Validate findings.json against report-schema.json
-  validate-ledger <path>    Validate coverage-ledger.json
-  help                      Show this help message
+  test                               Run all unit tests (validators, Discord formatter, hooks, SDK harness)
+  validate-findings <path>           Validate findings.json against report-schema.json
+  validate-ledger <path>             Validate coverage-ledger.json
+  send-discord <run-dir> [flags...]  Format and dispatch Discord webhook report from <run-dir>
+  run-server-audit [flags...]        Run the portable Antigravity SDK server audit pipeline
+  help                               Show this help message
 EOF
 }
 
@@ -28,7 +30,13 @@ case "$cmd" in
     node "$SCRIPT_DIR/validate-findings.test.cjs"
     echo "=== Running coverage-ledger validator tests ==="
     node "$SCRIPT_DIR/validate-coverage-ledger.test.cjs"
-    echo "=== All validation tests passed successfully ==="
+    echo "=== Running Discord webhook formatter & loopback tests ==="
+    node "$SCRIPT_DIR/send-discord-report.test.cjs"
+    echo "=== Running Harness² lifecycle hook tests ==="
+    node "$SCRIPT_DIR/hooks/hooks.test.cjs"
+    echo "=== Running Python SDK Harness² & /security-audit tests ==="
+    python3 -m unittest "$PROJECT_ROOT/harness/test_harness.py"
+    echo "=== All validation, Discord, hook, and harness tests passed successfully ==="
     ;;
   validate-findings)
     if [ -z "${2:-}" ]; then
@@ -43,6 +51,14 @@ case "$cmd" in
       exit 1
     fi
     node "$SCRIPT_DIR/validate-coverage-ledger.cjs" "$2"
+    ;;
+  send-discord)
+    shift
+    node "$SCRIPT_DIR/send-discord-report.cjs" "$@"
+    ;;
+  run-server-audit)
+    shift
+    PYTHONPATH="$PROJECT_ROOT${PYTHONPATH:+:$PYTHONPATH}" python3 -m harness.run_server_audit "$@"
     ;;
   help|--help|-h)
     usage

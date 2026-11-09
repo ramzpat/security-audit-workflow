@@ -38,7 +38,7 @@ The auditor executes a six-phase adversarial process:
 
 ## Quick Start & Verification
 
-Run the validation suite to ensure schema and ledger validators are functioning correctly:
+Run the complete validation and test suite (validators, Discord webhook formatter, lifecycle hooks, and Python SDK harness):
 
 ```bash
 ./scripts/run-audit.sh test
@@ -46,6 +46,7 @@ Run the validation suite to ensure schema and ledger validators are functioning 
 
 ## Running an Audit
 
+### 1. In AGY (CLI / IDE)
 To trigger an audit within AGY, launch the agent in the target codebase:
 
 ```bash
@@ -55,3 +56,19 @@ To trigger an audit within AGY, launch the agent in the target codebase:
 # Full audit mode
 "Security audit this codebase, output to ./audit-results"
 ```
+
+### 2. Portable Antigravity SDK Server Runner (`harness/`)
+The runner can audit server service configurations (Docker/Compose, systemd units, Nginx/Caddy proxies, application repos) and dispatch Rich Embed reports to Discord via webhook:
+
+```bash
+# 1. Setup per-server environment and config
+cp .env.example .env && chmod 600 .env
+cp config/server-audit.example.yaml config/server-audit.yaml
+
+# 2. Run offline dry-run (generates validated artifacts + Discord payload preview)
+./scripts/run-audit.sh run-server-audit --config config/server-audit.yaml --dry-run
+
+# 3. Run and dispatch report to Discord webhook
+./scripts/run-audit.sh run-server-audit --config config/server-audit.yaml --send-discord
+```
+

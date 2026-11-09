@@ -1,29 +1,23 @@
 {
-  "coverage-validator": {
-    "PostToolUse": [
+  "harness2-guardrail-gate": {
+    "enabled": true,
+    "PreToolUse": [
       {
-        "matcher": "write_file",
+        "matcher": "run_command",
         "hooks": [
           {
             "type": "command",
-            "command": "if [ -f coverage-ledger.json ]; then node scripts/validate-coverage-ledger.cjs coverage-ledger.json; fi",
-            "timeout": 15
+            "command": "node ../scripts/hooks/pre-tool-guardrail.cjs",
+            "timeout": 10
           }
         ]
       }
-    ]
-  },
-  "findings-validator": {
-    "PostToolUse": [
+    ],
+    "Stop": [
       {
-        "matcher": "write_file",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "if [ -f findings.json ]; then node scripts/validate-findings.cjs findings.json; fi",
-            "timeout": 15
-          }
-        ]
+        "type": "command",
+        "command": "node ../scripts/hooks/stop-validator-gate.cjs",
+        "timeout": 15
       }
     ]
   }
